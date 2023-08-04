@@ -1,0 +1,141 @@
+class Farm
+{
+    public int CounterEggs { get; set; }
+
+    public int CounterWeightEggs { get; set; }
+
+    public void CollectEggs(int hours, Bird bird)
+    {
+        Egg egg = null;
+        for (int i = 0; i < 24; i++)
+        {
+            if (i % hours == 0)
+            {
+                egg = bird.LayEgg();
+                CounterEggs++;
+
+                CounterWeightEggs += egg.Weight;
+            }
+        }
+
+        Console.WriteLine($"We have collect {CounterEggs} eggs for 24 hours from {bird}. " +
+            $"In sum - {CounterWeightEggs} grams");
+    }
+}
+
+abstract class Bird
+{
+    public int EggLayingTimeHours { get; set; }
+
+    public abstract Egg LayEgg();
+}
+
+class Chicken : Bird
+{
+    public Chicken(int EggLayingTimeHours)
+    {
+        this.EggLayingTimeHours = EggLayingTimeHours;
+    }
+
+    public override Egg LayEgg()
+    {
+        Egg chickenEgg = new ChickenEgg(200);
+        return chickenEgg;
+    }
+}
+
+class Ostrich : Bird
+{
+    public Ostrich(int EggLayingTimeHours)
+    {
+        this.EggLayingTimeHours = EggLayingTimeHours;
+    }
+
+    public override Egg LayEgg()
+    {
+        Egg ostrichEgg = new OstrichEgg(750);
+        //Random rnd = new Random();
+        //int ostrichChance = rnd.Next(1, 6);
+
+        //if (ostrichChance == 2)
+        //{
+        //    return ostrichEgg;
+        //}
+        return ostrichEgg;
+    }
+}
+
+class Quail : Bird
+{
+    public Quail(int EggLayingTimeHours)
+    {
+        this.EggLayingTimeHours = EggLayingTimeHours;
+    }
+    public override Egg LayEgg()
+    {
+        Egg quailEgg = new QuailEgg(60);
+        return quailEgg;
+    }
+}
+
+abstract class Egg
+{
+    public int Weight { get; set; }
+}
+
+class ChickenEgg : Egg
+{
+    public ChickenEgg(int Weight)
+    {
+        this.Weight = Weight;
+    }
+}
+
+class OstrichEgg : Egg
+{
+    public OstrichEgg(int Weight)
+    {
+        this.Weight = Weight;
+    }
+}
+
+class QuailEgg : Egg
+{
+    public QuailEgg(int Weight)
+    {
+        this.Weight = Weight;
+    }
+}
+
+internal class Program
+{
+    static void Main(string[] args)
+    {
+        int finalEggsCount = 0;
+        int finalWeight = 0;
+
+        var farm = new Farm();
+
+        var chicken = new Chicken(3);
+
+        var ostrich = new Ostrich(2);
+
+        var quail = new Quail(5);
+
+        Bird[] birds = new Bird[] { chicken, ostrich, quail };
+
+        for (int i = 0; i < birds.Length; i++)
+        {
+            farm.CollectEggs(birds[i].EggLayingTimeHours, birds[i]);
+
+            finalEggsCount += farm.CounterEggs;
+            farm.CounterEggs = 0;
+
+            finalWeight += farm.CounterWeightEggs;
+            farm.CounterWeightEggs = 0;
+        }
+
+        Console.WriteLine($"\nFor all your farm was collected {finalEggsCount} eggs." +
+                          $"\n{finalWeight} grams in all");
+    }
+}
